@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import com.angoma.booking_service.service.BookingService;
+import io.micrometer.core.instrument.Counter;
 
 import java.util.List;
 
@@ -13,9 +14,11 @@ import java.util.List;
 public class BookingController {
 
     private final BookingService bookingService;
+    private final Counter bookingCounter;
 
-    public BookingController(BookingService bookingService) {
+    public BookingController(BookingService bookingService, Counter bookingCounter) {
         this.bookingService = bookingService;
+        this.bookingCounter = bookingCounter;
     }
 
     @Operation(summary = "Get all bookings")
@@ -37,6 +40,9 @@ public class BookingController {
     @Operation(summary = "Create new booking")
     @PostMapping
     public String createBooking() {
+
+        bookingCounter.increment();
+
         return "Booking created successfully";
     }
 
