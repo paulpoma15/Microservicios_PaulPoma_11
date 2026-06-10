@@ -3,6 +3,7 @@ package com.angoma.booking_service.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+import com.angoma.booking_service.service.BookingService;
 
 import java.util.List;
 
@@ -10,6 +11,12 @@ import java.util.List;
 @RequestMapping("/bookings")
 @Tag(name = "Bookings", description = "Booking management endpoints")
 public class BookingController {
+
+    private final BookingService bookingService;
+
+    public BookingController(BookingService bookingService) {
+        this.bookingService = bookingService;
+    }
 
     @Operation(summary = "Get all bookings")
     @GetMapping
@@ -43,5 +50,11 @@ public class BookingController {
     @GetMapping("/health")
     public String health() {
         return "UP";
+    }
+
+    @Operation(summary = "Check package availability (calls package service)")
+    @GetMapping("/check-package/{id}")
+    public String checkPackage(@PathVariable Long id) {
+        return bookingService.checkPackageAvailability(id);
     }
 }
